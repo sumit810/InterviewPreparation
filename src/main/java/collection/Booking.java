@@ -1,38 +1,14 @@
 package collection;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+// @Data generates the getters, setters, equals, hashCode and toString
+@Data
+@AllArgsConstructor
 public class Booking {
 
-    public String bookingId;
-    public String userId;
-    public Long amount;
-
-    public Booking(String bookingId, String userId, Long amount){
-        this.bookingId = bookingId;
-        this.userId = userId;
-        this.amount = amount;
-    }
-
-    public String getBookingId() {
-        return bookingId;
-    }
-
-    public void setBookingId(String bookingId) {
-        this.bookingId = bookingId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public Long getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Long amount) {
-        this.amount = amount;
-    }
+    private String bookingId;
+    private String userId;
+    private Long amount;
 }

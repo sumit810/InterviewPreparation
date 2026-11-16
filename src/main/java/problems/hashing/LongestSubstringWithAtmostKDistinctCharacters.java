@@ -1,5 +1,8 @@
 package problems.hashing;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /*
 * Longest Substring With At Most K Distinct Characters
 
@@ -13,9 +16,10 @@ map.size() > k
 import java.util.HashMap;
 import java.util.Map;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class LongestSubstringWithAtmostKDistinctCharacters {
 
-    private static int longestSubstringWithAtmostKDistinctCharacters(String str, int k) {
+    static int longestSubstringWithAtmostKDistinctCharacters(String str, int k) {
 
         int i = 0;
         int j = 0;
@@ -23,6 +27,9 @@ public class LongestSubstringWithAtmostKDistinctCharacters {
         int windowSize = 0;
         Map<Character, Integer> map = new HashMap<>();
 
+        if(k < 0){
+            throw new IllegalArgumentException("k must not be negative but was " + k);
+        }
         if(str == null || str.length() == 0 || k == 0){
             return 0;
         }
@@ -37,7 +44,7 @@ public class LongestSubstringWithAtmostKDistinctCharacters {
             if(map.size() <= k){
                 maxLength = Math.max(maxLength, windowSize);
                 j++;
-            } else if ( map.size() > k){
+            } else {
                 while(map.size() > k){
                     char leftChar = str.charAt(i);
                     map.put(leftChar, map.get(leftChar) - 1);

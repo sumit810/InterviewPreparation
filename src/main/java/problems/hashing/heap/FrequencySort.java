@@ -1,10 +1,17 @@
 package problems.hashing.heap;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.*;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class FrequencySort {
 
     public static List<Integer> frequencySort(int[] nums){
+        if(nums == null){
+            throw new IllegalArgumentException("nums must not be null");
+        }
         Map<Integer, Integer> freqMap = new HashMap<>();
         for(int num: nums){
             freqMap.put(num, freqMap.getOrDefault(num, 0) + 1);
@@ -35,7 +42,6 @@ public class FrequencySort {
 
     public static void main(String[] args) {
         int nums[] = {1, 1, 1, 3, 2, 1, 3 ,2, 4};
-        frequencySort(nums);
         System.out.println(frequencySort(nums));
     }
 }

@@ -1,11 +1,21 @@
 package problems.hashing.heap;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.Arrays;
 import java.util.PriorityQueue;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class KthSortedArray {
 
     public static void KthSortedArray(int[] nums , int k){
+        if(nums == null){
+            throw new IllegalArgumentException("nums must not be null");
+        }
+        if(k < 0){
+            throw new IllegalArgumentException("k must not be negative but was " + k);
+        }
         PriorityQueue<Integer> minHeap = new PriorityQueue<>();
         int index = 0;
 

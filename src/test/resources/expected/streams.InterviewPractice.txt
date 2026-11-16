@@ -1,0 +1,6 @@
+Characters:: {p=2, s=4, i=4, M=1}
+Sum of distinct numbers in an array: 22
+First Non-repeating character: H
+First Repeating Character:l
+[123, 652]
+60

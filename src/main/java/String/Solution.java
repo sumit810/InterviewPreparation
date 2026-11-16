@@ -1,22 +1,26 @@
 package String;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.Arrays;
 import java.util.Comparator;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class Solution {
     public static void main(String[] args) {
         String s = "Java is Amazing";
-        sortWords(s);
+        System.out.println(sortWords(s));
     }
 
-    private static void sortWords(String str) {
-        String[] words = str.split("\\s+");
-        Arrays.sort(words, new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return Integer.compare(o1.length(), o2.length());
-            }
-        });
+    /** Returns the words of str ordered by length; words of equal length keep their original order. */
+    static String sortWords(String str) {
+        if(str == null){
+            throw new IllegalArgumentException("str must not be null");
+        }
+        // strip first: split would otherwise give an empty first word for leading whitespace
+        String[] words = str.strip().split("\\s+");
+        Arrays.sort(words, Comparator.comparingInt(String::length));
 
         StringBuilder sb = new StringBuilder();
         for(int i = 0 ; i < words.length; i++){
@@ -25,6 +29,6 @@ public class Solution {
             }
             sb.append(words[i]);
         }
-        System.out.println(sb);
+        return sb.toString();
     }
 }

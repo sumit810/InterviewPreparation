@@ -1,7 +1,11 @@
 package String;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.*;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class Anagrams {
     public static void main(String[] args) {
         String s = "cbaebabacd";
@@ -11,8 +15,12 @@ public class Anagrams {
 
 
     public static List<Integer> findAnagrams(String s, String p) {
+        if(s == null || p == null){
+            throw new IllegalArgumentException("strings must not be null");
+        }
         List<Integer> result = new ArrayList<>();
-        if(p.length() > s.length()){
+        // an empty pattern has no anagrams to find
+        if(p.isEmpty() || p.length() > s.length()){
             return result;
         }
 

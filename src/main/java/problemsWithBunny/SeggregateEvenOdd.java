@@ -1,10 +1,17 @@
 package problemsWithBunny;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.Arrays;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class SeggregateEvenOdd {
 
     public static int[] seggregateEvenOdd(int[] nums){
+        if(nums == null){
+            throw new IllegalArgumentException("nums must not be null");
+        }
         int left = 0;
         int right = nums.length - 1;
         while(left < right){
@@ -12,7 +19,8 @@ public class SeggregateEvenOdd {
                 left++;
             }
 
-            while (nums[right]%2 ==1 && left < right){
+            // not "== 1": the remainder of a negative odd number is -1
+            while (nums[right]%2 != 0 && left < right){
                 right--;
             }
 

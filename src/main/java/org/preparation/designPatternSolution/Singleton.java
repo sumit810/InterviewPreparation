@@ -2,33 +2,47 @@ package org.preparation.designPatternSolution;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
+/**
+ * A singleton that stays a singleton under concurrency, reflection, serialization and cloning.
+ */
 public class Singleton implements Serializable, Cloneable {
 
-    private static Singleton soleInstance = null;
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Initialization-on-demand holder: the JVM creates the instance when Holder is first used
+     * (so it is lazy) and class initialization is thread-safe (so no locking or volatile is needed).
+     */
+    private static class Holder {
+        private static final Singleton INSTANCE = new Singleton();
+    }
 
     private Singleton(){
-        /*if(soleInstance != null){
-            throw new RuntimeException("Cannot create, please use getInstance()");
-        }*/
+        // Guards against reflection. While Holder is creating the one real instance, INSTANCE is still null
+        // and this passes. A reflective call lands here first, which makes Holder create the real instance
+        // (INSTANCE is then set), so the reflective call is always the one that fails.
+        if(Holder.INSTANCE != null){
+            throw new IllegalStateException("Cannot create, please use getInstance()");
+        }
         System.out.println("Constructing ...");
     }
 
     public static Singleton getInstance(){
-        if(soleInstance == null){
-            soleInstance = new Singleton();
-        }
-        return soleInstance;
+        return Holder.INSTANCE;
     }
 
+    /** A singleton must not be copied: "cloning" it hands back the one instance instead of a new object. */
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        return getInstance();
     }
 
+    /** Deserialization calls this and uses its result, so the freshly read copy is thrown away. */
     private Object readResolve() throws ObjectStreamException{
         System.out.println(".. read resolve ..!");
-        return soleInstance;
+        return getInstance();
     }
 
     public static void main(String[] args) throws Exception{
@@ -55,21 +69,27 @@ public class Singleton implements Serializable, Cloneable {
     }
 
     private static void violationUsingSerializationAndDeserilaization(Singleton s1) throws Exception {
-        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("/tmp/s1.ser"));
-        oos.writeObject(s1);
-        oos.close();
+        // in memory instead of a file under /tmp: nothing to clean up and it works on every OS
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream oos = new ObjectOutputStream(bytes)) {
+            oos.writeObject(s1);
+        }
 
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream("/tmp/s1.ser"));
-        Singleton singleton = (Singleton) ois.readObject();
-        testingIfTwoObjectsHaveSameHashCode("singleton", singleton);
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
+            Singleton singleton = (Singleton) ois.readObject();
+            testingIfTwoObjectsHaveSameHashCode("singleton", singleton);
+        }
     }
 
     private static void violationUsingReflection() throws Exception {
-        Class clazz = Class.forName("org.preparation.designPatternSolution.Singleton");
-        Constructor<Singleton> ctx = clazz.getDeclaredConstructor();
+        Class<?> clazz = Class.forName("org.preparation.designPatternSolution.Singleton");
+        Constructor<?> ctx = clazz.getDeclaredConstructor();
         ctx.setAccessible(true);
-        Singleton singleton = ctx.newInstance();
-        testingIfTwoObjectsHaveSameHashCode("singleton", singleton);
+        try {
+            ctx.newInstance(); // always fails: the constructor refuses to create a second instance
+        } catch (InvocationTargetException e) {
+            System.out.println("Reflection blocked : " + e.getCause().getMessage());
+        }
     }
 
 

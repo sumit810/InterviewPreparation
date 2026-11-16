@@ -1,10 +1,20 @@
 package org.preparation.designPattern;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+import lombok.Getter;
+import lombok.ToString;
+
+// Lombok generates the getters and toString.
+// The builder itself is written by hand on purpose: this file is the Builder pattern exercise.
+@Getter
+@ToString
 class User{
-    private String firstName;
-    private double salary;
-    private String lastName;
-    private String address;
+    private final String firstName;
+    private final double salary;
+    private final String lastName;
+    private final String address;
 
     private User(UserBuilder builder){
         this.firstName = builder.firstName;
@@ -12,18 +22,6 @@ class User{
         this.lastName = builder.lastName;
         this.address = builder.address;
     }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "firstName='" + firstName + '\'' +
-                ", salary=" + salary +
-                ", lastName='" + lastName + '\'' +
-                ", address='" + address + '\'' +
-                '}';
-    }
-
-
 
     public static class UserBuilder{
         private String firstName;
@@ -51,13 +49,19 @@ class User{
             return this;
         }
 
+        /** Every field is optional; the only rule is that a salary cannot be negative. */
         public User build(){
+            // "!(salary >= 0)" rather than "salary < 0" so that NaN is rejected too
+            if(!(salary >= 0)){
+                throw new IllegalArgumentException("salary must not be negative but was " + salary);
+            }
             return new User(this);
         }
     }
 }
 
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class BuilderDemo {
     public static void main(String... s){
         User u1 = new User.UserBuilder()

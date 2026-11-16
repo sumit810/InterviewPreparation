@@ -1,7 +1,11 @@
 package String;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.*;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class GroupAnagrams {
 
     public static void main(String[] args) {
@@ -9,9 +13,15 @@ public class GroupAnagrams {
         System.out.println(groupAnagrams(strs));
     }
 
-    private static List<List<String>> groupAnagrams(String[] strs) {
+    static List<List<String>> groupAnagrams(String[] strs) {
+        if(strs == null){
+            throw new IllegalArgumentException("strs must not be null");
+        }
         Map<String, List<String>> map = new HashMap<>();
         for(String s: strs){
+            if(s == null){
+                throw new IllegalArgumentException("strs must not contain null");
+            }
             char[] characters = s.toCharArray();
             Arrays.sort(characters);
             String sortedString = new String(characters);

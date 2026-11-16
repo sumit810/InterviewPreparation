@@ -24,6 +24,8 @@ Java practice code for technical interviews: data structures and algorithms prob
 - JDK 21 (the build uses `--enable-preview`)
 - Maven 3.x
 
+The data classes use [Lombok](https://projectlombok.org/) for getters, setters, `equals`/`hashCode`, `toString` and constructors. Maven handles it without any setup. In IntelliJ IDEA, turn on annotation processing (Settings > Build, Execution, Deployment > Compiler > Annotation Processors) if the IDE reports missing getters.
+
 ## Build and run
 
 ```bash
@@ -43,3 +45,17 @@ java --enable-preview -cp target/classes heap.KthLargest
 ```
 
 You can also open the project in IntelliJ IDEA and run any class directly.
+
+## Tests
+
+Every class has JUnit 5 tests under `src/test/java`, in the same package as the class it tests and named `<Class>Test`.
+
+```bash
+mvn test                          # run all tests
+mvn test -Dtest=KthLargestTest    # run one test class
+mvn verify                        # run all tests and enforce the coverage minimum
+```
+
+`mvn test` also writes a JaCoCo coverage report to `target/site/jacoco/index.html`. `mvn verify` fails the build if line coverage drops below 95% or branch coverage below 90%.
+
+Solution methods reject input they cannot handle (a `null` array or string, `k` outside the valid range) with `IllegalArgumentException` instead of returning a wrong answer.

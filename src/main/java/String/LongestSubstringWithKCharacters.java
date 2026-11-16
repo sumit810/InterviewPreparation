@@ -1,8 +1,12 @@
 package String;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class LongestSubstringWithKCharacters {
     public static void main(String[] args) {
 
@@ -11,7 +15,13 @@ public class LongestSubstringWithKCharacters {
         System.out.println(longestSubstringWithAtmostKCharacters(s, k));
     }
 
-    private static int longestSubstringWithAtmostKCharacters(String s, int k) {
+    static int longestSubstringWithAtmostKCharacters(String s, int k) {
+        if(s == null){
+            throw new IllegalArgumentException("s must not be null");
+        }
+        if(k < 0){
+            throw new IllegalArgumentException("k must not be negative but was " + k);
+        }
         Map<Character,Integer> map = new HashMap<>();
         int maxLength = 0;
         int left = 0;

@@ -1,10 +1,15 @@
 package problemsWithBunny;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.Arrays;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class SortZerosOnesTwos {
 
     public static int[] sortZerosOnesTwos(int[] nums){
+        requireOnlyZerosOnesTwos(nums);
         int countZeros = 0;
         int countOnes = 0;
         int countTwos = 0;
@@ -39,27 +44,36 @@ public class SortZerosOnesTwos {
 
 
     public static int[] sortZerosOnesTwosUisngDutchNationalFlag(int[] nums){
+        requireOnlyZerosOnesTwos(nums);
         int start = 0;
         int middle = 0;
         int end = nums.length - 1;
 
         while(middle <= end){
-            switch (nums[middle]) {
-                case 0:
-                    swap(nums, start, middle);
-                    start++;
-                    middle++;
-                    break;
-                case 1:
-                    middle++;
-                    break;
-                case 2:
-                    swap(nums, middle, end);
-                    end--;
-                    break;
+            if(nums[middle] == 0){
+                swap(nums, start, middle);
+                start++;
+                middle++;
+            } else if(nums[middle] == 1){
+                middle++;
+            } else {
+                swap(nums, middle, end);
+                end--;
             }
         }
         return nums;
+    }
+
+    /** Checked before anything is moved, so a rejected array is left exactly as it was passed in. */
+    private static void requireOnlyZerosOnesTwos(int[] nums) {
+        if(nums == null){
+            throw new IllegalArgumentException("nums must not be null");
+        }
+        for(int num: nums){
+            if(num < 0 || num > 2){
+                throw new IllegalArgumentException("nums may only contain 0, 1 and 2 but found " + num);
+            }
+        }
     }
 
     private static void swap(int[] nums, int positionx, int positiony) {

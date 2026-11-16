@@ -1,10 +1,14 @@
 package streams.curiousCoder.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import streams.curiousCoder.model.Employee;
 
 import java.util.Arrays;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class EmployeeUtil {
 
     public static List<Employee> getEmployeesList() {

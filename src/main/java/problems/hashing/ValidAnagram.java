@@ -1,5 +1,8 @@
 package problems.hashing;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /*
 * Valid Anagram
 Problem
@@ -14,9 +17,13 @@ Output: true
 import java.util.HashMap;
 import java.util.Map;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class ValidAnagram {
 
     public static boolean isAnagram(String str1, String str2){
+        if(str1 == null || str2 == null){
+            throw new IllegalArgumentException("strings must not be null");
+        }
         if(str1.length() != str2.length()){
             return false;
         }

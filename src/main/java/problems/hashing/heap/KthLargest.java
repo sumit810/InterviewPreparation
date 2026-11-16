@@ -1,10 +1,20 @@
 package problems.hashing.heap;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.PriorityQueue;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class KthLargest {
 
-    private static int findKthLargest(int[] nums, int k) {
+    static int findKthLargest(int[] nums, int k) {
+        if(nums == null){
+            throw new IllegalArgumentException("nums must not be null");
+        }
+        if(k < 1 || k > nums.length){
+            throw new IllegalArgumentException("k must be between 1 and " + nums.length + " but was " + k);
+        }
         PriorityQueue<Integer> minHeap = new PriorityQueue<>();
 
         for(int i = 0 ; i < nums.length; i++){

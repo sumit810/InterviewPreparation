@@ -1,5 +1,8 @@
 package problems.hashing;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,9 +16,13 @@ Input:  "aabbcdde"
 Output: 'c'
 * */
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class FirstNonRepeatingCharacter {
 
     public static Character findFirstNonRepeatingCharacter(String str){
+        if(str == null){
+            throw new IllegalArgumentException("str must not be null");
+        }
         Map<Character, Integer> freqMap = new HashMap<>();
 
         for(char ch: str.toCharArray()){

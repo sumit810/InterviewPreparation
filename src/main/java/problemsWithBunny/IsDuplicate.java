@@ -1,11 +1,18 @@
 package problemsWithBunny;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class IsDuplicate {
 
     public static boolean isDuplicate(int[] nums){
+        if(nums == null){
+            throw new IllegalArgumentException("nums must not be null");
+        }
 
         Map<Integer, Integer> map = new HashMap<>();
         for(int i = 0 ; i < nums.length ; i++){

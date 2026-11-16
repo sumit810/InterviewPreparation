@@ -1,5 +1,8 @@
 package problems.hashing;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /*
 * Count Occurrences of Anagram
 Problem
@@ -16,9 +19,13 @@ Output: 3
 import java.util.HashMap;
 import java.util.Map;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class CountOccurrencesAnagram {
 
-    private static int countAnagrams(String text, String pattern) {
+    static int countAnagrams(String text, String pattern) {
+        if(text == null || pattern == null){
+            throw new IllegalArgumentException("strings must not be null");
+        }
         Map<Character, Integer> patternFreq = new HashMap<>();
         Map<Character, Integer> windowFreq  = new HashMap<>();
 
@@ -57,7 +64,14 @@ public class CountOccurrencesAnagram {
 
     }
 
-    private static int countAnagramsNew(String textString, String pattern) {
+    static int countAnagramsNew(String textString, String pattern) {
+        if(textString == null || pattern == null){
+            throw new IllegalArgumentException("strings must not be null");
+        }
+        // an empty pattern has no anagrams, and a window of size 0 would never advance
+        if(pattern.isEmpty()){
+            return 0;
+        }
 
         Map<Character, Integer> patternFrequency = new HashMap<>();
         Map<Character, Integer> windowFrequency = new HashMap<>();
@@ -83,8 +97,8 @@ public class CountOccurrencesAnagram {
                 j++;
             }
 
-            //case 2: if window size is equal to k
-            else if(windowSize == k){
+            //case 2: window size is equal to k (it never grows past k, because it shrinks here)
+            else {
                 if(windowFrequency.equals(patternFrequency)){
                     count++;
                 }

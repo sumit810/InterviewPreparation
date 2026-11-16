@@ -24,17 +24,20 @@ public class LRUCache {
     private final Map<Integer, Node> map = new HashMap<>();
 
     public LRUCache(int capacity){
+        if(capacity < 1){
+            throw new IllegalArgumentException("capacity must be at least 1 but was " + capacity);
+        }
         this.capacity = capacity;
         head.next = tail;
         tail.prev = head;
     }
 
-    public void remove(Node node){
+    private void remove(Node node){
         node.prev.next = node.next;
         node.next.prev = node.prev;
     }
 
-    public void addToEnd(Node node){
+    private void addToEnd(Node node){
         node.prev = tail.prev;
         node.next = tail;
         tail.prev.next = node;

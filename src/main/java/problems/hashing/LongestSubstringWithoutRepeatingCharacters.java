@@ -1,11 +1,18 @@
 package problems.hashing;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class LongestSubstringWithoutRepeatingCharacters {
 
     public static int longestSubstringWithoutRepeatingCharacters(String str) {
+        if(str == null){
+            throw new IllegalArgumentException("str must not be null");
+        }
 
         Map<Character, Integer> map = new HashMap<>();
         int start = 0;

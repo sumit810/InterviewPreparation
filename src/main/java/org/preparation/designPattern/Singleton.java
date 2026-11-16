@@ -1,9 +1,17 @@
 package org.preparation.designPattern;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * Exercise version: an eager singleton that is deliberately left open to the three classic attacks
+ * (reflection, serialization, cloning) so that TestCase can demonstrate them.
+ * The hardened version is org.preparation.designPatternSolution.Singleton.
+ */
 public class Singleton implements Serializable, Cloneable{
 
     private static Singleton soleInstance = new Singleton(); //eagerly created object
@@ -22,6 +30,7 @@ public class Singleton implements Serializable, Cloneable{
     }
 }
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 class TestCase{
     public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, IOException, CloneNotSupportedException {
         Singleton s1 = Singleton.getInstance();
@@ -31,24 +40,43 @@ class TestCase{
         print("s2", s2);
 
         //1. Violating using Reflection
-        Class clazz = Class.forName("org.preparation.designPattern.Singleton");
-        Constructor<Singleton> declaredConstructor = clazz.getDeclaredConstructor();
-        declaredConstructor.setAccessible(true);
-        Singleton s3 = declaredConstructor.newInstance();
+        Singleton s3 = newInstanceUsingReflection();
         print("s3", s3);
 
         //2. Using Serialization/de-serialization
-        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("/tmp/s1.ser"));
-        oos.writeObject(s2);
-
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream("/tmp/s1.ser"));
-        Singleton s4 = (Singleton) ois.readObject();
+        Singleton s4 = copyUsingSerialization(s2);
         print("s4", s4);
 
         //3. using clone
-        Singleton s5 = (Singleton) s2.clone();
+        Singleton s5 = copyUsingClone(s2);
         print("s5", s5);
 
+    }
+
+    /** The private constructor does not stop reflection: this returns a second instance. */
+    static Singleton newInstanceUsingReflection() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        Class<?> clazz = Class.forName("org.preparation.designPattern.Singleton");
+        Constructor<?> declaredConstructor = clazz.getDeclaredConstructor();
+        declaredConstructor.setAccessible(true);
+        return (Singleton) declaredConstructor.newInstance();
+    }
+
+    /** Without readResolve(), deserialization builds a new object: this returns another instance. */
+    static Singleton copyUsingSerialization(Singleton singleton) throws IOException, ClassNotFoundException {
+        // in memory instead of a file under /tmp: nothing to clean up and it works on every OS
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream oos = new ObjectOutputStream(bytes)) {
+            oos.writeObject(singleton);
+        }
+
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
+            return (Singleton) ois.readObject();
+        }
+    }
+
+    /** clone() just calls super.clone(): this returns another instance. */
+    static Singleton copyUsingClone(Singleton singleton) throws CloneNotSupportedException {
+        return (Singleton) singleton.clone();
     }
 
     private static void print(String name, Singleton object) {

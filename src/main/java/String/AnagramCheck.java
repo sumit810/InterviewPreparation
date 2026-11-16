@@ -1,8 +1,12 @@
 package String;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE) // static methods only, never instantiated
 public class AnagramCheck {
     public static void main(String[] args) {
 
@@ -12,7 +16,15 @@ public class AnagramCheck {
         System.out.println(isAnagramUsingFrequencyCount(s1,s2));
     }
 
-    private static boolean isAnagramUsingFrequencyCount(String s1, String s2) {
+    /** Works on lowercase a-z only, which is what lets it count in a 26-slot array. */
+    static boolean isAnagramUsingFrequencyCount(String s1, String s2) {
+        requireNonNull(s1, s2);
+        requireLowercaseLetters(s1);
+        requireLowercaseLetters(s2);
+        if(s1.length() != s2.length()){
+            return false;
+        }
+
         int[] frequencyCount = new int[26];
         for(int i = 0 ; i < s1.length();i++) {
             frequencyCount[s1.charAt(i) - 'a']++;
@@ -26,7 +38,24 @@ public class AnagramCheck {
         return true;
     }
 
-    private static boolean isAnagram(String s1, String s2) {
+    private static void requireNonNull(String s1, String s2) {
+        if(s1 == null || s2 == null){
+            throw new IllegalArgumentException("strings must not be null");
+        }
+    }
+
+    private static void requireLowercaseLetters(String s) {
+        for(int i = 0 ; i < s.length(); i++){
+            char ch = s.charAt(i);
+            if(ch < 'a' || ch > 'z'){
+                throw new IllegalArgumentException("only lowercase a-z is supported but found '" + ch + "'");
+            }
+        }
+    }
+
+    /** Works on any characters and is case-sensitive. */
+    static boolean isAnagram(String s1, String s2) {
+        requireNonNull(s1, s2);
         if(s1.length() != s2.length()){
             return false;
         }
