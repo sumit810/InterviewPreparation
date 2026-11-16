@@ -8,6 +8,10 @@ target/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+# per-machine IDE state that the IDE rewrites on its own
+.idea/dbnavigator.xml
+.idea/misc.xml
+.idea/markdown.xml
 *.iws
 *.iml
 *.ipr
