@@ -37,6 +37,7 @@ mvn verify                        # tests plus the coverage gate (95% line, 90% 
 - Tests live in `src/test/java`, in the **same package** as the class under test, named `<Class>Test`. Same package is required because many solution methods are package-private, and because a class in the package named `String` cannot be referenced by qualified name from another package.
 - Name exceptions in `org.preparation.designPattern`: `SingletonTest` there is a main class, not a test, so the tests for that package's singletons are `EagerSingletonTest` (for `Singleton` and `TestCase`) and `LazySingletonTest` (for the main class `SingletonTest`).
 - `testsupport.Console.capture(...)` (test sources) returns what a block prints to `System.out`; each test class uses it for one smoke test of `main`. `Console.expectedOutput(name)` reads a recorded output from `src/test/resources/expected/` and is used for the three stream classes, whose `main` output is long.
+- CI: `.github/workflows/ci.yml` runs `mvn verify` on Corretto 21 for pushes to `main` and for pull requests, and uploads `target/site/jacoco/` as the `jacoco-report` artifact.
 - Surefire's `argLine` is `@{argLine} --enable-preview`; the `@{argLine}` part carries the JaCoCo agent, so keep it when editing the pom.
 - Known uncovered code, all unreachable by design: the lines after each thread blocks in `threading.DeadlockDemo`, the reflective `newInstance()` call that always throws in `org.preparation.designPatternSolution.Singleton`, and the `false` outcome of `s1 == s2` in `designPattern.Singleton.main`.
 

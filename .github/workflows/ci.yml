@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A newer push to the same branch or pull request cancels the run that is still in progress.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Build, test and check coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v7
+
+      # Corretto 21 is the JDK used locally; "cache: maven" restores ~/.m2 keyed on pom.xml.
+      - uses: actions/setup-java@v6
+        with:
+          distribution: corretto
+          java-version: '21'
+          cache: maven
+
+      # verify = compile, run every test, and fail below the JaCoCo minimum (95% line, 90% branch).
+      - name: Run tests and coverage check
+        run: mvn --batch-mode --no-transfer-progress verify
+
+      # Kept even when the build fails, so a failed coverage check can be inspected.
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/
+          if-no-files-found: ignore

@@ -56,6 +56,8 @@ mvn test -Dtest=KthLargestTest    # run one test class
 mvn verify                        # run all tests and enforce the coverage minimum
 ```
 
+A GitHub Actions workflow (`.github/workflows/ci.yml`) runs `mvn verify` on every push to `main` and on every pull request, and attaches the coverage report to the run.
+
 `mvn test` also writes a JaCoCo coverage report to `target/site/jacoco/index.html`. `mvn verify` fails the build if line coverage drops below 95% or branch coverage below 90%.
 
 Solution methods reject input they cannot handle (a `null` array or string, `k` outside the valid range) with `IllegalArgumentException` instead of returning a wrong answer.
