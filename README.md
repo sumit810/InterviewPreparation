@@ -1,5 +1,7 @@
 # Interview Preparation
 
+[![CI](https://github.com/sumit810/InterviewPreparation/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sumit810/InterviewPreparation/actions/workflows/ci.yml)
+
 Java practice code for technical interviews: data structures and algorithms problems, core Java topics and design patterns.
 
 ## Topics
